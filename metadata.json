@@ -1,0 +1,8 @@
+{
+  "name": "AIVAN",
+  "description": "AIVAN הוא צ'אטבוט AI מתקדם עם ממשק מודרני ומונפש. משתמשים יכולים לתקשר עם מודל Gemini באמצעות טקסט, תמונות וקלט קולי.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
