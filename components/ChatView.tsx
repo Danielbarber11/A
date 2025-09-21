@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, RefObject } from 'react';
 import ChatInput from './ChatInput';
-import { NewChatIcon, HomeIcon, DownloadIcon, CloseIcon, AivanLoadingSpinner, SpeakerIcon, DotsMenuIcon, ShortenIcon, SummarizeIcon, CopyIcon, EditIcon, ImageLoadingSpinner, UploadIcon, VideoLoadingSpinner, SearchIcon, ChartIcon, StoryIcon, PersonalityIcon, DocumentIcon, ImageIcon, VideoIcon, ChevronDownIcon, ArrowLeftIcon, ArrowRightIcon, HelpIcon } from './icons';
+import { NewChatIcon, HomeIcon, DownloadIcon, CloseIcon, AivanLoadingSpinner, SpeakerIcon, DotsMenuIcon, ShortenIcon, SummarizeIcon, CopyIcon, EditIcon, ImageLoadingSpinner, UploadIcon, VideoLoadingSpinner, SearchIcon, ChartIcon, StoryIcon, PersonalityIcon, DocumentIcon, ImageIcon, VideoIcon, ChevronDownIcon, ArrowLeftIcon, ArrowRightIcon } from './icons';
 import { ChatMessage, GroundingMetadata, VisualStoryPage } from '../types';
 
 interface ChatViewProps {
@@ -28,6 +28,10 @@ interface ChatViewProps {
   onUploadButtonClick: () => void;
   onStoryChoice: (choice: string) => void;
   capabilities: { id: string; text: string; icon: React.FC<{ className?: string }> }[];
+  // Fix: Add props for model selection to resolve type error
+  currentModel: { id: string; name: string };
+  models: { id: string; name: string }[];
+  onModelChange: (model: { id: string; name: string }) => void;
 }
 
 const GroundingSources: React.FC<{ metadata: GroundingMetadata }> = ({ metadata }) => (
@@ -321,14 +325,29 @@ const Message: React.FC<{
 };
 
 const ChatView: React.FC<ChatViewProps> = (props) => {
-  const { messages, onSend, isLoading, onCapabilityClick, activeCapability, onCancelCapability, onNewChat, onGoHome, onMessageAction, onCopyRequest, onEditRequest, inputText, onInputTextChange, currentAction, image, documentFile, onFileChange, onFileRemove, fileInputRef, cameraInputRef, isWaitingForImage, onUploadButtonClick, onStoryChoice, capabilities } = props;
+  const { messages, onSend, isLoading, onCapabilityClick, activeCapability, onCancelCapability, onNewChat, onGoHome, onMessageAction, onCopyRequest, onEditRequest, inputText, onInputTextChange, currentAction, image, documentFile, onFileChange, onFileRemove, fileInputRef, cameraInputRef, isWaitingForImage, onUploadButtonClick, onStoryChoice, capabilities, currentModel, models, onModelChange } = props;
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [lightboxImage, setLightboxImage] = useState<string | null>(null);
   const [isCapabilitiesModalOpen, setIsCapabilitiesModalOpen] = useState(false);
+  // Fix: Add state and ref for model selector dropdown
+  const [isModelSelectorOpen, setIsModelSelectorOpen] = useState(false);
+  const modelSelectorRef = useRef<HTMLDivElement>(null);
+
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // Fix: Add effect to close model selector on outside click
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+        if (modelSelectorRef.current && !modelSelectorRef.current.contains(event.target as Node)) {
+            setIsModelSelectorOpen(false);
+        }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
   
   const displayedCapabilities = capabilities.slice(0, 5);
   const moreCapabilities = capabilities.slice(5);
@@ -341,7 +360,29 @@ const ChatView: React.FC<ChatViewProps> = (props) => {
                     <HomeIcon className="w-6 h-6 text-gray-600 dark:text-gray-300" />
                 </button>
             </div>
-            <h1 className="text-xl font-bold text-gray-800 dark:text-gray-100">אייבן</h1>
+            {/* Fix: Replace static title with dynamic model selector dropdown */}
+            <div className="relative" ref={modelSelectorRef}>
+                <button onClick={() => setIsModelSelectorOpen(!isModelSelectorOpen)} className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                    <h1 className="text-xl font-bold text-gray-800 dark:text-gray-100">{currentModel.name}</h1>
+                    <ChevronDownIcon className="w-5 h-5 text-gray-500" />
+                </button>
+                {isModelSelectorOpen && (
+                    <div className="absolute top-full mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 z-20">
+                        {models.map(model => (
+                            <button 
+                                key={model.name} // Using name as key since IDs can be duplicated for different configurations
+                                onClick={() => {
+                                    onModelChange(model);
+                                    setIsModelSelectorOpen(false);
+                                }}
+                                className="w-full text-right px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                            >
+                                {model.name}
+                            </button>
+                        ))}
+                    </div>
+                )}
+            </div>
              <div className="flex items-center gap-2">
                 <button onClick={onNewChat} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
                     <NewChatIcon className="w-6 h-6 text-gray-600 dark:text-gray-300" />

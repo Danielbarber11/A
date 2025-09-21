@@ -2,7 +2,8 @@ import React, { useState, useCallback, useRef } from 'react';
 import MainView from './components/MainView';
 import ChatView from './components/ChatView';
 import { ChatMessage, MessagePart, VisualStoryPage } from './types';
-import { sendChatMessage, generateImageFromPrompt, editImageWithPrompt, modifyText, generateVideoFromPrompt, sendGroundedChatMessage, generateChartSVG, generateInteractiveStory, AIVAN_SYSTEM_INSTRUCTION, processUserPrompt, generateVisualStory } from './services/geminiService';
+// Fix: Import newly implemented functions from geminiService
+import { sendChatMessage, generateImageFromPrompt, editImageWithPrompt, generateVideoFromPrompt, AIVAN_SYSTEM_INSTRUCTION, processUserPrompt, modifyText, sendGroundedChatMessage, generateChartSVG, generateInteractiveStory, generateVisualStory } from './services/geminiService';
 import { SearchIcon, ImageIcon, EditIcon, VideoIcon, ChartIcon, StoryIcon, PersonalityIcon, DocumentIcon, VisualStoryIcon, DescribeImageIcon, PaletteIcon, DreamIcon, CodeIcon, RecipeIcon, WorkoutIcon, TripIcon, SpeechIcon, ResumeIcon, LanguageIcon } from './components/icons';
 
 type View = 'main' | 'chat';
@@ -122,6 +123,7 @@ const App: React.FC = () => {
     
     setImage(null);
     setDocumentFile(null);
+    setInputText('');
 
     const userMessage: ChatMessage = {
       role: 'user',

@@ -102,7 +102,7 @@ const ChatInput: React.FC<ChatInputProps> = ({
       <div className={
         activeCapability 
         ? "relative p-1 rounded-full bg-gradient-to-r from-sky-300 to-slate-100 transition-all duration-300" 
-        : "relative p-1 rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 animate-gradient"
+        : "relative p-1 rounded-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"
       }>
         <div className="relative flex items-center bg-white dark:bg-gray-800 rounded-full w-full">
             
@@ -180,14 +180,14 @@ const ChatInput: React.FC<ChatInputProps> = ({
             <button
                 onClick={toggleListening}
                 disabled={isInputDisabled}
-                className={`flex-shrink-0 h-12 w-12 rounded-full flex items-center justify-center transition-colors ${isListening ? 'text-white bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 animate-gradient' : 'bg-white text-black dark:bg-gray-700 dark:text-white'} ${isInputDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`flex-shrink-0 h-12 w-12 rounded-full flex items-center justify-center transition-colors ${isListening ? 'text-white bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500' : 'bg-white text-black dark:bg-gray-700 dark:text-white'} ${isInputDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                 <MicIcon className="w-6 h-6" />
             </button>
             <button
                 onClick={handleSend}
                 disabled={isInputDisabled || (!value.trim() && !image && !documentFile)}
-                className={`flex-shrink-0 ms-1 h-12 w-12 rounded-full flex items-center justify-center text-white transition-transform transform hover:scale-110 active:scale-95 ${(isInputDisabled || (!value.trim() && !image && !documentFile)) ? 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed' : 'bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 animate-gradient'}`}
+                className={`flex-shrink-0 ms-1 h-12 w-12 rounded-full flex items-center justify-center text-white transition-transform transform hover:scale-110 active:scale-95 ${(isInputDisabled || (!value.trim() && !image && !documentFile)) ? 'bg-gray-400 dark:bg-gray-600 cursor-not-allowed' : 'bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500'}`}
                 >
                 {isLoading ? (
                     currentAction === 'image' ? <ImageLoadingSpinner /> :
